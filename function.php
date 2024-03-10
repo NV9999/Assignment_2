@@ -279,4 +279,64 @@ function deleteUser($userParams){
 
 }
 
+
+function storeProduct($productInput){
+
+    global $conn;
+
+    $id = mysqli_real_escape_string($conn, $productInput['id']);
+    $description = mysqli_real_escape_string($conn, $productInput['description']);
+    $image = mysqli_real_escape_string($conn, $productInput['image']);
+    $pricing = mysqli_real_escape_string($conn, $productInput['pricing']);
+    $shipping_cost = mysqli_real_escape_string($conn, $productInput['shipping_cost']);
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($description))){
+
+        return error422('Enter your description');
+
+    }elseif(empty(trim($image))){
+
+        return error422('input your image');
+
+    }elseif(empty(trim($pricing))){
+
+        return error422('Enter pricing');
+
+    }elseif(empty(trim($shipping_cost))){
+
+        return error422('Enter shipping_cost');
+
+    }
+    else
+    {
+          $query = "INSERT INTO products (id,description,image,pricing,shipping_cost) VALUES ('$id','$description','$image','$pricing','$shipping_cost')";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 201,
+                'message' => 'User Created Suceessfully',
+            ];
+            header("HTTP/1.1 201 Created");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
 ?>
