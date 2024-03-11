@@ -320,7 +320,7 @@ function storeProduct($productInput){
 
             $data = [
                 'status' => 201,
-                'message' => 'User Created Suceessfully',
+                'message' => 'product added Suceessfully',
             ];
             header("HTTP/1.1 201 Created");
             header('Content-Type: application/json');
@@ -338,5 +338,366 @@ function storeProduct($productInput){
           }
     }
 }
+
+function getproduct($productParams){
+
+    global $conn;
+
+    if($productParams['id'] == null){
+
+        return error422('Enter your product ID');
+    }
+  $productId = mysqli_real_escape_string($conn, $productParams['id']);
+  $query = "SELECT * FROM products WHERE id='$productId' LIMIT 1";
+  $result = mysqli_query($conn, $query);
+
+  if($result){
+
+    if(mysqli_num_rows($result) == 1)
+    {
+          $res = mysqli_fetch_assoc($result);
+
+          $data = [
+            'status' => 200,
+            'message' => 'Product Fetched Successfully',
+            'data'=> $res
+        ];
+        header("HTTP/1.1 200 OK");
+        return json_encode($data);
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'No Product Found',
+        ];
+        header("HTTP/1.1 404 NoT Found");
+        return json_encode($data);
+    }
+
+  }else{
+    $data = [
+        'status' => 500,
+        'message' => 'Internal Server Error',
+    ];
+    header("HTTP/1.1 500 Internal Server Error");
+    return json_encode($data);
+  }
+
+}
+
+function productList()
+{
+    global $conn;
+    if(!$conn){
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    $query = "SELECT * FROM products";
+
+    $query_run = mysqli_query($conn, $query);
+
+    if ($query_run) {
+
+        if (mysqli_num_rows($query_run) > 0) {
+
+            $systemProducts = mysqli_fetch_all($query_run, MYSQLI_ASSOC);
+
+            $data = [
+                'status' => 200,
+                'message' => 'product List Fetched Successfully',
+                'SystemProducts'=>$systemProducts
+            ];
+            header("HTTP/1.1 200 OK");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 404,
+                'message' => 'No User Found',
+            ];
+            header("HTTP/1.1 404 Not Found");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        }
+    } else {
+
+        $data = [
+            'status' => 500,
+            'message' => 'Internal Server Error',
+        ];
+        header("HTTP/1.1 500 Internal Server Error");
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+}
+
+
+function updateProduct($productInput, $productParams){
+
+    global $conn;
+
+    if(!isset($productParams['id'])){
+
+        return error422('productID not Found in URL');
+
+    }elseif($productParams['id'] == null){
+        return error422('Enter The productID');
+    }
+
+    $productId = mysqli_real_escape_string($conn, $productParams['id']);
+
+    $id = mysqli_real_escape_string($conn, $productInput['id']);
+    $description = mysqli_real_escape_string($conn, $productInput['description']);
+    $image = mysqli_real_escape_string($conn, $productInput['image']);
+    $pricing = mysqli_real_escape_string($conn, $productInput['pricing']);
+    $shipping_cost	 = mysqli_real_escape_string($conn, $productInput['hipping_cost']);
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($description))){
+
+        return error422('Enter description');
+
+    }elseif(empty(trim($image))){
+
+        return error422('Input your image');
+
+    }elseif(empty(trim($pricing))){
+
+        return error422('Enter pricing');
+
+    }elseif(empty(trim($shipping_cost))){
+
+        return error422('Enter shipping cost');
+
+    }
+    else
+    {
+          $query = "UPDATE products SET id='$id', description= '$description', image= '$image', pricing='$pricing', shipping_cost= '$shipping_cost' WHERE id ='$productId' LIMIT 1";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 200,
+                'message' => 'product Updated Suceessfully',
+            ];
+            header("HTTP/1.1 200 Success");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
+function deleteProduct($productParams){
+    global $conn;
+    
+    if(!isset($productParams['id'])){
+
+        return error422('ProductID not Found in URL');
+
+    }elseif($productParams['id'] == null){
+        return error422('Enter The ProductID');
+    }
+
+    $productId = mysqli_real_escape_string($conn, $productParams['id']);
+
+    $query = "DELETE FROM  products WHERE id=$productId LIMIT 1";
+    $result = mysqli_query($conn, $query);
+
+    if($result){
+
+        $data = [
+            'status' => 204,
+            'message' => 'Product Deleted Successfully',
+        ];
+        header("HTTP/1.1 204 Deleted");
+        return json_encode($data);
+
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'Product Not Found',
+        ];
+        header("HTTP/1.1 404 Not  Found");
+        return json_encode($data);
+    }
+
+}
+
+function storeOrder($orderInput){
+
+    global $conn;
+
+    $id = mysqli_real_escape_string($conn, $orderInput['id']);
+    $cart_id = mysqli_real_escape_string($conn, $orderInput['cart_id']);
+    $order_date = mysqli_real_escape_string($conn, $orderInput['order_date']);
+    $total = mysqli_real_escape_string($conn, $orderInput['total']);
+    
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($cart_id))){
+
+        return error422('Enter cart_id');
+
+    }elseif(empty(trim($order_date))){
+
+        return error422('Enter order date');
+
+    }elseif(empty(trim($total))){
+
+        return error422('Enter total');
+    }
+    else
+    {
+          $query = "INSERT INTO orders (id,cart_id,order_date,total) VALUES ('$id','$cart_id','$order_date','$total')";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 201,
+                'message' => 'Order Created Suceessfully',
+            ];
+            header("HTTP/1.1 201 Created");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
+function storeComments($commentsInput){
+
+    global $conn;
+
+    $id = mysqli_real_escape_string($conn, $commentsInput['id']);
+    $cart_id = mysqli_real_escape_string($conn, $commentsInput['cart_id']);
+    $order_date = mysqli_real_escape_string($conn, $commentsInput['order_date']);
+    $total = mysqli_real_escape_string($conn, $commentsInput['total']);
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($cart_id))){
+
+        return error422('Enter your cart-id');
+
+    }elseif(empty(trim($order_date))){
+
+        return error422('Enter order_date');
+
+    }elseif(empty(trim($total))){
+
+        return error422('Enter total');
+    }
+    else
+    {
+          $query = "INSERT INTO comments (id,cart_id,order_date,total) VALUES ('$id','$cart_id','$order_date','$total')";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 201,
+                'message' => 'Comments Created Suceessfully',
+            ];
+            header("HTTP/1.1 201 Created");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
+function storeCart($cartInput){
+
+    global $conn;
+
+    $id = mysqli_real_escape_string($conn, $cartInput['id']);
+    $product_ids = mysqli_real_escape_string($conn, $cartInput['product_ids']);
+    $quantities = mysqli_real_escape_string($conn, $cartInput['quantities']);
+    $user_id = mysqli_real_escape_string($conn, $cartInput['user_id']);
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($product_ids))){
+
+        return error422('Enter product_id');
+
+    }elseif(empty(trim($quantities))){
+
+        return error422('Enter quantities');
+
+    }elseif(empty(trim($user_id))){
+
+        return error422('Enter user_id');
+    }
+    else
+    {
+          $query = "INSERT INTO cart (id,product_ids,quantities,user_id) VALUES ('$id','$product_ids','$quantities','$user_id')";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 201,
+                'message' => 'cart Created Suceessfully',
+            ];
+            header("HTTP/1.1 201 Created");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
 
 ?>
