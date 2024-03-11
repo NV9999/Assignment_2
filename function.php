@@ -450,7 +450,7 @@ function updateProduct($productInput, $productParams){
     $description = mysqli_real_escape_string($conn, $productInput['description']);
     $image = mysqli_real_escape_string($conn, $productInput['image']);
     $pricing = mysqli_real_escape_string($conn, $productInput['pricing']);
-    $shipping_cost	 = mysqli_real_escape_string($conn, $productInput['hipping_cost']);
+    $shipping_cost	 = mysqli_real_escape_string($conn, $productInput['shipping_cost']);
 
     if(empty(trim($id))){
 
@@ -598,29 +598,39 @@ function storeComments($commentsInput){
     global $conn;
 
     $id = mysqli_real_escape_string($conn, $commentsInput['id']);
-    $cart_id = mysqli_real_escape_string($conn, $commentsInput['cart_id']);
-    $order_date = mysqli_real_escape_string($conn, $commentsInput['order_date']);
-    $total = mysqli_real_escape_string($conn, $commentsInput['total']);
+    $product_id = mysqli_real_escape_string($conn, $commentsInput['product_id']);
+    $user_id  = mysqli_real_escape_string($conn, $commentsInput['user_id']);
+    $rating = mysqli_real_escape_string($conn, $commentsInput['rating']);
+    $image = mysqli_real_escape_string($conn, $commentsInput['image']);
+    $text = mysqli_real_escape_string($conn, $commentsInput['text']);
 
     if(empty(trim($id))){
 
         return error422('Enter your ID');
             
-    }elseif(empty(trim($cart_id))){
+    }elseif(empty(trim($product_id))){
 
-        return error422('Enter your cart-id');
+        return error422('Enter your product-id');
 
-    }elseif(empty(trim($order_date))){
+    }elseif(empty(trim($user_id))){
 
-        return error422('Enter order_date');
+        return error422('Enter user_date');
 
-    }elseif(empty(trim($total))){
+    }elseif(empty(trim($rating))){
 
-        return error422('Enter total');
+        return error422('Enter rating');
+    }
+    elseif(empty(trim($image))){
+
+        return error422('Enter image');
+    }
+    elseif(empty(trim($text))){
+
+        return error422('Enter text');
     }
     else
     {
-          $query = "INSERT INTO comments (id,cart_id,order_date,total) VALUES ('$id','$cart_id','$order_date','$total')";
+          $query = "INSERT INTO comments (id,product_id,user_id,rating,image,text) VALUES ('$id','$product_id','$user_id','$rating','$image','$text')";
           $result = mysqli_query($conn, $query);
           
           if($result){
@@ -1057,10 +1067,10 @@ function updateCart($cartInput, $cartParams){
 
     if(!isset($cartParams['id'])){
 
-        return error422('productID not Found in URL');
+        return error422('UpdateID not Found in URL');
 
     }elseif($cartParams['id'] == null){
-        return error422('Enter The productID');
+        return error422('Enter The UpdateID');
     }
 
     $cartId = mysqli_real_escape_string($conn, $cartParams['id']);
@@ -1076,15 +1086,15 @@ function updateCart($cartInput, $cartParams){
             
     }elseif(empty(trim($product_ids))){
 
-        return error422('Enter description');
+        return error422('Enter product_id');
 
     }elseif(empty(trim($quantities))){
 
-        return error422('Input your image');
+        return error422('Input quantities');
 
     }elseif(empty(trim($user_id))){
 
-        return error422('Enter pricing');
+        return error422('Enter user_id');
     }
     else
     {
