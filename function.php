@@ -699,5 +699,600 @@ function storeCart($cartInput){
     }
 }
 
+function cartList()
+{
+    global $conn;
+    if(!$conn){
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    $query = "SELECT * FROM cart";
+
+    $query_run = mysqli_query($conn, $query);
+
+    if ($query_run) {
+
+        if (mysqli_num_rows($query_run) > 0) {
+
+            $systemUsers = mysqli_fetch_all($query_run, MYSQLI_ASSOC);
+
+            $data = [
+                'status' => 200,
+                'message' => 'cart List Fetched Successfully',
+                'SystemUsers'=>$systemUsers
+            ];
+            header("HTTP/1.1 200 OK");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 404,
+                'message' => 'No cart Found',
+            ];
+            header("HTTP/1.1 404 Not Found");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        }
+    } else {
+
+        $data = [
+            'status' => 500,
+            'message' => 'Internal Server Error',
+        ];
+        header("HTTP/1.1 500 Internal Server Error");
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+}
+
+function getCart($cartParams){
+
+    global $conn;
+
+    if($cartParams['id'] == null){
+
+        return error422('Enter your CART ID');
+    }
+  $cartId = mysqli_real_escape_string($conn, $cartParams['id']);
+  $query = "SELECT * FROM cart WHERE id='$cartId' LIMIT 1";
+  $result = mysqli_query($conn, $query);
+
+  if($result){
+
+    if(mysqli_num_rows($result) == 1)
+    {
+          $res = mysqli_fetch_assoc($result);
+
+          $data = [
+            'status' => 200,
+            'message' => 'Cart Fetched Successfully',
+            'data'=> $res
+        ];
+        header("HTTP/1.1 200 OK");
+        return json_encode($data);
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'No cart Found',
+        ];
+        header("HTTP/1.1 404 NoT Found");
+        return json_encode($data);
+    }
+
+  }else{
+    $data = [
+        'status' => 500,
+        'message' => 'Internal Server Error',
+    ];
+    header("HTTP/1.1 500 Internal Server Error");
+    return json_encode($data);
+  }
+
+}
+
+function commentsList()
+{
+    global $conn;
+    if(!$conn){
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    $query = "SELECT * FROM comments";
+
+    $query_run = mysqli_query($conn, $query);
+
+    if ($query_run) {
+
+        if (mysqli_num_rows($query_run) > 0) {
+
+            $systemUsers = mysqli_fetch_all($query_run, MYSQLI_ASSOC);
+
+            $data = [
+                'status' => 200,
+                'message' => 'comments Fetched Successfully',
+                'SystemUsers'=>$systemUsers
+            ];
+            header("HTTP/1.1 200 OK");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 404,
+                'message' => 'No comments Found',
+            ];
+            header("HTTP/1.1 404 Not Found");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        }
+    } else {
+
+        $data = [
+            'status' => 500,
+            'message' => 'Internal Server Error',
+        ];
+        header("HTTP/1.1 500 Internal Server Error");
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+}
+
+function orderList()
+{
+    global $conn;
+    if(!$conn){
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    $query = "SELECT * FROM orders";
+
+    $query_run = mysqli_query($conn, $query);
+
+    if ($query_run) {
+
+        if (mysqli_num_rows($query_run) > 0) {
+
+            $systemUsers = mysqli_fetch_all($query_run, MYSQLI_ASSOC);
+
+            $data = [
+                'status' => 200,
+                'message' => 'order Fetched Successfully',
+                'SystemUsers'=>$systemUsers
+            ];
+            header("HTTP/1.1 200 OK");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        } else {
+            $data = [
+                'status' => 404,
+                'message' => 'No order Found',
+            ];
+            header("HTTP/1.1 404 Not Found");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        }
+    } else {
+
+        $data = [
+            'status' => 500,
+            'message' => 'Internal Server Error',
+        ];
+        header("HTTP/1.1 500 Internal Server Error");
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+}
+
+function getComments($commentsParams){
+
+    global $conn;
+
+    if($commentsParams['id'] == null){
+
+        return error422('Enter your CART ID');
+    }
+  $commentsId = mysqli_real_escape_string($conn, $commentsParams['id']);
+  $query = "SELECT * FROM comments WHERE id='$commentsId' LIMIT 1";
+  $result = mysqli_query($conn, $query);
+
+  if($result){
+
+    if(mysqli_num_rows($result) == 1)
+    {
+          $res = mysqli_fetch_assoc($result);
+
+          $data = [
+            'status' => 200,
+            'message' => 'Comments Fetched Successfully',
+            'data'=> $res
+        ];
+        header("HTTP/1.1 200 OK");
+        return json_encode($data);
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'No comments Found',
+        ];
+        header("HTTP/1.1 404 NoT Found");
+        return json_encode($data);
+    }
+
+  }else{
+    $data = [
+        'status' => 500,
+        'message' => 'Internal Server Error',
+    ];
+    header("HTTP/1.1 500 Internal Server Error");
+    return json_encode($data);
+  }
+
+}
+
+
+function getOrder($orderParams){
+
+    global $conn;
+
+    if($orderParams['id'] == null){
+
+        return error422('Enter your order ID');
+    }
+  $orderId = mysqli_real_escape_string($conn, $orderParams['id']);
+  $query = "SELECT * FROM orders WHERE id='$orderId' LIMIT 1";
+  $result = mysqli_query($conn, $query);
+
+  if($result){
+
+    if(mysqli_num_rows($result) == 1)
+    {
+          $res = mysqli_fetch_assoc($result);
+
+          $data = [
+            'status' => 200,
+            'message' => 'Order Fetched Successfully',
+            'data'=> $res
+        ];
+        header("HTTP/1.1 200 OK");
+        return json_encode($data);
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'No Order Found',
+        ];
+        header("HTTP/1.1 404 NoT Found");
+        return json_encode($data);
+    }
+
+  }else{
+    $data = [
+        'status' => 500,
+        'message' => 'Internal Server Error',
+    ];
+    header("HTTP/1.1 500 Internal Server Error");
+    return json_encode($data);
+  }
+
+}
+
+function updateComments($commentsInput, $commentsParams){
+
+    global $conn;
+
+    if(!isset($commentsParams['id'])){
+
+        return error422('commentsID not Found in URL');
+
+    }elseif($commentsParams['id'] == null){
+        return error422('Enter The commentsID');
+    }
+
+    $commentsId = mysqli_real_escape_string($conn, $commentsParams['id']);
+
+    $id = mysqli_real_escape_string($conn, $commentsInput['id']);
+    $product_id = mysqli_real_escape_string($conn, $commentsInput['product_id']);
+    $user_id = mysqli_real_escape_string($conn, $commentsInput['user_id']);
+    $rating = mysqli_real_escape_string($conn, $commentsInput['rating']);
+    $image = mysqli_real_escape_string($conn, $commentsInput['image']);
+    $text = mysqli_real_escape_string($conn, $commentsInput['text']);
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($product_id))){
+
+        return error422('Enter product_id');
+
+    }elseif(empty(trim($user_id))){
+
+        return error422('Input user_id');
+
+    }elseif(empty(trim($rating))){
+
+        return error422('Enter rating');
+
+    }elseif(empty(trim($image))){
+
+        return error422('input your image');
+
+    }elseif(empty(trim($text))){
+
+        return error422('Enter text');
+
+    }
+    else
+    {
+          $query = "UPDATE comments SET id='$id', product_id= '$product_id', user_id= '$user_id', rating='$rating', image= '$image',text='$text' WHERE id ='$commentsId' LIMIT 1";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 200,
+                'message' => 'comments Updated Suceessfully',
+            ];
+            header("HTTP/1.1 200 Success");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
+
+function updateCart($cartInput, $cartParams){
+
+    global $conn;
+
+    if(!isset($cartParams['id'])){
+
+        return error422('productID not Found in URL');
+
+    }elseif($cartParams['id'] == null){
+        return error422('Enter The productID');
+    }
+
+    $cartId = mysqli_real_escape_string($conn, $cartParams['id']);
+
+    $id = mysqli_real_escape_string($conn, $cartInput['id']);
+    $product_ids = mysqli_real_escape_string($conn, $$cartInput['product_ids']);
+    $quantities = mysqli_real_escape_string($conn, $cartInput['quantities']);
+    $user_id = mysqli_real_escape_string($conn, $cartInput['user_id']);
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($product_ids))){
+
+        return error422('Enter description');
+
+    }elseif(empty(trim($quantities))){
+
+        return error422('Input your image');
+
+    }elseif(empty(trim($user_id))){
+
+        return error422('Enter pricing');
+    }
+    else
+    {
+          $query = "UPDATE cart SET id='$id', product_ids= '$product_ids', quantities= '$quantities', user_id='$user_id' WHERE id ='$cartId' LIMIT 1";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 200,
+                'message' => 'Cart Updated Suceessfully',
+            ];
+            header("HTTP/1.1 200 Success");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
+
+function updateOrder($orderInput, $orderParams){
+
+    global $conn;
+
+    if(!isset($orderParams['id'])){
+
+        return error422('orderID not Found in URL');
+
+    }elseif($orderParams['id'] == null){
+        return error422('Enter The orderID');
+    }
+
+    $orderId = mysqli_real_escape_string($conn, $orderParams['id']);
+
+    $id = mysqli_real_escape_string($conn, $orderInput['id']);
+    $cart_id = mysqli_real_escape_string($conn, $orderInput['cart_id']);
+    $order_date = mysqli_real_escape_string($conn, $orderInput['order_date']);
+    $total= mysqli_real_escape_string($conn, $orderInput['total']);
+
+    if(empty(trim($id))){
+
+        return error422('Enter your ID');
+            
+    }elseif(empty(trim($cart_id))){
+
+        return error422('Enter description');
+
+    }elseif(empty(trim($order_date))){
+
+        return error422('Input your image');
+
+    }elseif(empty(trim($total))){
+
+        return error422('Enter pricing');
+    }
+    else
+    {
+          $query = "UPDATE orders SET id='$id', cart_id= '$cart_id', order_date='$order_date', total= '$total' WHERE id ='$orderId' LIMIT 1";
+          $result = mysqli_query($conn, $query);
+          
+          if($result){
+
+            $data = [
+                'status' => 200,
+                'message' => 'order Updated Suceessfully',
+            ];
+            header("HTTP/1.1 200 Success");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+
+          else{
+            $data = [
+                'status' => 500,
+                'message' => 'Internal Server Error',
+            ];
+            header("HTTP/1.1 500 Internal Server Error");
+            header('Content-Type: application/json');
+            echo json_encode($data);
+          }
+    }
+}
+
+function deleteCart($cartParams){
+    global $conn;
+    
+    if(!isset($cartParams['id'])){
+
+        return error422('CartID not Found in URL');
+
+    }elseif($cartParams['id'] == null){
+        return error422('Enter The CartID');
+    }
+
+    $cartId = mysqli_real_escape_string($conn, $cartParams['id']);
+
+    $query = "DELETE FROM  cart WHERE id=$cartId LIMIT 1";
+    $result = mysqli_query($conn, $query);
+
+    if($result){
+
+        $data = [
+            'status' => 204,
+            'message' => 'cart Deleted Successfully',
+        ];
+        header("HTTP/1.1 204 Deleted");
+        return json_encode($data);
+
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'cart Not Found',
+        ];
+        header("HTTP/1.1 404 Not  Found");
+        return json_encode($data);
+    }
+
+}
+
+
+function deleteOrder($orderParams){
+    global $conn;
+    
+    if(!isset($orderParams['id'])){
+
+        return error422('orderID not Found in URL');
+
+    }elseif($orderParams['id'] == null){
+        return error422('Enter The orderID');
+    }
+
+    $orderId = mysqli_real_escape_string($conn, $orderParams['id']);
+
+    $query = "DELETE FROM  orders WHERE id=$orderId LIMIT 1";
+    $result = mysqli_query($conn, $query);
+
+    if($result){
+
+        $data = [
+            'status' => 204,
+            'message' => 'order Deleted Successfully',
+        ];
+        header("HTTP/1.1 204 Deleted");
+        return json_encode($data);
+
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'order Not Found',
+        ];
+        header("HTTP/1.1 404 Not  Found");
+        return json_encode($data);
+    }
+
+}
+
+
+function deleteComments($commentsParams){
+    global $conn;
+    
+    if(!isset($commentsParams['id'])){
+
+        return error422('commentID not Found in URL');
+
+    }elseif($commentsParams['id'] == null){
+        return error422('Enter The commentID');
+    }
+
+    $commentsId = mysqli_real_escape_string($conn, $commentsParams['id']);
+
+    $query = "DELETE FROM  comments WHERE id=$commentsId LIMIT 1";
+    $result = mysqli_query($conn, $query);
+
+    if($result){
+
+        $data = [
+            'status' => 204,
+            'message' => 'comments Deleted Successfully',
+        ];
+        header("HTTP/1.1 204 Deleted");
+        return json_encode($data);
+
+    }
+    else
+    {
+        $data = [
+            'status' => 404,
+            'message' => 'comments Not Found',
+        ];
+        header("HTTP/1.1 404 Not  Found");
+        return json_encode($data);
+    }
+
+}
+
 
 ?>
